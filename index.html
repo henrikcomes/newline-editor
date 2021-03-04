@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <body style="margin: 0">
+    <div style="display: flex; height: 50px; padding: 0.5em">
+      <span style="flex: 1 0 0"></span>
+
+      <button id="clipboardButton">Copy to Clipboard</button>
+    </div>
+
+    <div
+      style="
+        display: flex;
+        height: calc(100vh - (2em + 2px + 50px + 1em));
+        border: 1px solid rgba(0, 0, 0, 0.5);
+        padding: 0.5em;
+        margin: 0.5em;
+      "
+    >
+      <div style="white-space: pre-line; flex: 1 0 0" id="preview"></div>
+
+      <textarea style="flex: 1 0 0" id="input"></textarea>
+    </div>
+
+    <script>
+      const input = document.getElementById("input");
+
+      input.addEventListener("input", (el) => {
+        if (input.value[0] === '"') {
+          input.value = input.value.slice(1);
+        }
+        if (input.value[input.value.length - 1] === '"') {
+          input.value = input.value.slice(0, input.value.length - 1);
+        }
+
+        input.value = input.value.split("\\r\\n").join("\r\n");
+
+        document.getElementById("preview").innerHTML = input.value;
+      });
+
+      document
+        .getElementById("clipboardButton")
+        .addEventListener("click", (ev) => {
+          var dummy = document.createElement("textarea");
+          document.body.appendChild(dummy);
+          console.log(JSON.stringify(input.value))
+          dummy.value = JSON.stringify(input.value).replaceAll("\\n", "\\r\\n");
+          dummy.select();
+          document.execCommand("copy");
+          document.body.removeChild(dummy);
+        });
+    </script>
+  </body>
+</html>
